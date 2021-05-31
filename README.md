@@ -9,12 +9,16 @@ Nowadays, keyword spotting and speech recognition are widely used in diferent ap
 Below are the minimum hardware and software requiremnets for this project.
 #### Hardware
 1 x Nucleo F446RE Board
+
 2 x Micro 360 Degree Continuous Rotation Servo (FS90R)
+
 2 x Wheel
+
 1 x I2S MEMS Microphone (SPH0645LM4H MEMS Breakout Module)
 
 #### Software
 STM32CubeMX IDE
+
 Audacity
 
 ### Data Collection
