@@ -16,7 +16,82 @@ Below are the minimum hardware and software requiremnets for this project.
 #### Software
 STM32CubeMX IDE
 
-### 
+### Integration of FS90R (Servo Motor) with STM32
+FS90R is a 360 degree continuous rotation servo from FEETECH. Since its default rest point is 1.5 ms, it could be configured to rotate counterclockwise by setting the pulse width above the reset point, otherwise it will result in clockwise.  
+
+In this project, we are using two FS90R to demonstrate the wheelchair’s movements which are go, stop, left and right by configuring the two FS90R simultaneously. Table below shows the configuration of the FS90Rs corresponding to each scenario.
+
+First, before coding the servo motor, we need to do some configuration on STM32. In this project, TIM2 was used. Since TIM2 is connected to APB1 bus, thus, the maximum frequency for the timer clock is 90MHz. However, the maximum value we could obtain is only 65535 due to the prescalar register which is only 16 bit. Then, divide the clock using prescalar and ARR register in order to obatin 900 kHz (45MHz/50Hz = 900 kHz).Thus, to get 50 Hz, prescalar should set to 900 whereas ARR set to 1000. Since the ARR, it will be act as 1000% pulse width and it would easier for us to modified setting the "active duration" by just modified with x% to CRR1 register.
+
+After setting up the STM32, let's us insight to the coding used to control the movement of servo motors based on the 4 situation we set.
+
+Coding below shows the two servo motors are coded simultaneosly in order make it move based on the situation that we set. For example, both servo motors will rotating clockwise at the same time when "GO" command is detected. Besides, when "Left" command is detected, the servo motor on the left will be stop while the right side servo motor will rotate in clockwise. This configuration will allow the prototype turns left.
+
+```c
+int GO_command(){
+	 htim2.Instance->CCR1 = 25;  // duty cycle is .5 ms
+	 htim2.Instance->CCR2 = 25;  // duty cycle is .5 ms
+	 HAL_Delay(2000);
+	 return 0;
+}
+
+int STOP_command(){
+	 htim2.Instance->CCR1 = 0;  // duty cycle is .5 ms
+	 htim2.Instance->CCR2 = 0;  // duty cycle is .5 ms
+	 HAL_Delay(2000);
+}
+
+int LEFT_command(){
+	 htim2.Instance->CCR1 = 25;  // duty cycle is .5 ms
+	 htim2.Instance->CCR2 = 0;  // duty cycle is .5 ms
+	 HAL_Delay(2000);
+}
+
+int RIGHT_command(){
+	 htim2.Instance->CCR1 = 0;  // duty cycle is .5 ms
+	 htim2.Instance->CCR2 = 25;  // duty cycle is .5 ms
+	 HAL_Delay(2000);
+}
+```
+
+In `main`, we use a while loop to keep looping and wait for the command. When command is detected and recognised as same as one of the data base， the corresponding function will be executed. For example, when "Left" is detected, the `Left_command()` subroutine will be executed.
+
+
+```c
+while (1)
+  {
+
+	  // Use default size
+	  char *command_array[SIZE_OF_CMD_ARRAY] = {};
+
+	  // COMMAND Strings
+	  char *command_go = "go";
+	  char *command_stop = "stop";
+	  char *command_left = "left";
+	  char *command_right = "right";
+
+
+	  for (i=0; i<SIZE_OF_CMD_ARRAY; i++)
+	  {
+		  if (command_array[i] == command_left)
+			  LEFT_command();
+
+		  else if (command_array[i] == command_right)
+			  RIGHT_command();
+
+		  else if (command_array[i] == command_go)
+			  GO_command();
+
+		  else if (command_array[i] == command_stop)
+			  STOP_command();
+
+		  else
+			  STOP_command();
+
+	  }
+````
+
+
 ### Hardware setup
 ### Steps for firmware development
 ### Steps for hardware development
