@@ -15,6 +15,54 @@ Below are the minimum hardware and software requiremnets for this project.
 
 #### Software
 STM32CubeMX IDE
+Audacity
+
+### Data Collection
+To train the simple command through CNN using DSP, we need to collect at least "50" sampels for each command. By using audacity, we can record and edit the sample to make sure the audio sample meets the requirements which are less than 1s, "mono". 
+
+### Integration of I2S MEMS Microphone with STM32
+
+
+### Integration CNN
+- Import library based on the "reference"
+
+### Coding
+For loop is used to keep receiving data from I2S MEMS microphone. Error message `Error Rx` will be printed out if STM32 board failed to receive data from the microphone, otherwise an audio buffer will be set as varible for the input data.
+
+```c
+  for (int i=0; i<16000; i+=2){	
+		  volatile HAL_StatusTypeDef result = HAL_I2S_Receive(&hi2s2, data_in, 2, 100);	
+		  if (result != HAL_OK){
+			  strcpy((char*)buf, "Error Rx\r\n");
+		  } else {
+			  audio_buffer[i] = (int16_t)data_in[0];
+			  audio_buffer[i+1] = (int16_t)data_in[1];
+		  }
+	  }
+
+```
+
+To recognise the received data, the received data will be send to kws file and processed by CNN and DSP library.
+
+```c
+char output_class[12][8] = {"Silence", "Unknown", "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"};
+  KWS_DS_CNN kws(audio_buffer);
+
+  kws.extract_features();
+  kws.classify();
+
+````
+
+Data is printed in PuTTY through USART of STM32 board in order to verified the result of the word recognition.
+
+```c
+int max_ind = kws.get_top_class(kws.output);
+
+  char buffer [70];
+  int buffer_output = 0;
+  buffer_output = sprintf(buffer, "Detected %s (%d%%)\r\n", output_class[max_id], ((int)kws.output[max_ind]*100/128));
+  HAL_UART_Transmit(&huart2, (unit8_t *)buffer, buffer_output, 100);
+```
 
 ### Integration of FS90R (Servo Motor) with STM32
 FS90R is a 360 degree continuous rotation servo from FEETECH. Since its default rest point is 1.5 ms, it could be configured to rotate counterclockwise by setting the pulse width above the reset point, otherwise it will result in clockwise.  
@@ -90,8 +138,3 @@ while (1)
 
 	  }
 ````
-
-
-### Hardware setup
-### Steps for firmware development
-### Steps for hardware development
