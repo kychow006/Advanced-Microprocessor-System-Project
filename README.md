@@ -14,7 +14,7 @@ Below are the minimum hardware and software requiremnets for this project.
 
 2 x Wheel
 
-1 x I2S MEMS Microphone (SPH0645LM4H MEMS Breakout Module)
+1 x INMP441 MEMS Omnidirectional Microphones
 
 #### Software
 STM32CubeMX IDE
