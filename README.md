@@ -1,9 +1,11 @@
 # Advanced-Microprocessor-System-Project
 ## Group 4: Arm Based Implementation of Speech Controlled Wheelchair
 ### Introduction
-Nowadays, keyword spotting and speech recognition are widely used in diferent application in order to improve the quality of human's life and solve inconvenience. Based on the our obseervation, we found that the increasing number of disabled and elderly people is leading to more invention in medical support devices. For example, the evolution of wheelchairs from the conventional mechanical wheelchair to nowadays electric wheelchair. However, some users were unable to freely control the wheelchair due to lack of arms or energy or having involuntary action people.
-  
-  Thus, this project proposed a user friendly speech controlled wheelchair to elderly and disabled groups. Users can voice out simple commands for controlling wheelchair’s movement. Any forces not even is needed for the wheelchair operation. Throuhout the project, 4 simple commands which are "GO", "STOP", "Left" and  "Right" are trained using CNN in the DSP of STM32 in order to control the movement of the servo motor.
+Nowadays, the increasing number of disabled and elderly people, leading to more invention in medical support devices. Especially the evolution of wheelchairs from the conventional mechanical wheelchair to nowadays electric wheelchair. However, some users were unable to freely control the wheelchair due to lack of arms or energy or having involuntary action.
+
+Thus, this project is carried out to develop an user friendly speech controlled wheelchair to elderly and disabled groups. We implement Keyword Spotting (KWS) into the wheelchair. Hence, users can control the wheelchair’s movement by voice out simple commands. Any forces not even needed for the wheelchair operation.
+
+In this project, the KWS is implemented on Nucleo-F446RE due to its low power consumption and reliability. Besides, it provides an affordable and flexible alternative for users to build up our prototype with low cost. This project is built on GitHub (Reference: https://github.com/ARM-software/ML-KWS-for-MCU). As the result of the deployment, our prototype can be controlled to move in 4 situations which are “Go”, “Stop”, “Left” and “Right”.
 
 ### Requirements
 Below are the minimum hardware and software requiremnets for this project.
